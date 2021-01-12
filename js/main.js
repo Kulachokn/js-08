@@ -1,17 +1,17 @@
 'use strict'
 import {default as images} from './gallery-items.js';
 
+let indexCurrentImage;
+
 const galleryRef = document.querySelector('.js-gallery');
 const modalRef = document.querySelector('.js-lightbox');
 const closeBtn = document.querySelector('button[data-action="close-lightbox"]');
 const modalImage = document.querySelector('.lightbox__image');
 const overlayRef = document.querySelector('.lightbox__overlay');
 
-modalRef.addEventListener('click', handleOpenModal);
-closeBtn.addEventListener('click', handleCloseModal);
-overlayRef.addEventListener('click', handleOverlayClick);
-
-let indexCurrentImage;
+// modalRef.addEventListener('click', handleOpenModal);
+// closeBtn.addEventListener('click', handleCloseModal);
+// overlayRef.addEventListener('click', handleOverlayClick);
 
 const galleryCreator = () => {
     let galleryList = '';
@@ -50,19 +50,23 @@ function handleOpenModal(event) {
     modalRef.classList.add('is-open');
     window.addEventListener('keydown', handlePressKey);
     indexCurrentImage = Number(event.target.dataset.index);
+    closeBtn.addEventListener('click', handleCloseModal);
+    overlayRef.addEventListener('click', handleCloseModal);
 }
 
 function handleCloseModal() {
     modalImage.src = '';
     modalRef.classList.remove('is-open');
     window.removeEventListener('keypress', handlePressKey);
+    closeBtn.removeEventListener('click', handleCloseModal);
+    overlayRef.removeEventListener('click', handleCloseModal);
 }
 
-function handleOverlayClick(event) {
-    if (event.target === event.currentTarget) {
-        handleCloseModal();
-    }
-}
+// function handleOverlayClick(event) {
+//     if (event.target === event.currentTarget) {
+//         handleCloseModal();
+//     }
+// }
 
 function handlePressKey(event) {
     switch (event.code) {
@@ -70,20 +74,28 @@ function handlePressKey(event) {
             handleCloseModal();
             break;
         case 'ArrowRight':
-            if (indexCurrentImage + 1 === galleryRef.length) {
-                indexCurrentImage = 0;
-            } else {
-                indexCurrentImage += 1;
-            }
-            modalImage.src = galleryRef[indexCurrentImage].original;
+            // if (indexCurrentImage + 1 === images.length) {
+            //     indexCurrentImage = 0;
+            // } else {
+            //     indexCurrentImage += 1;
+            // }
+
+            indexCurrentImage + 1 === images.length
+                ? (indexCurrentImage = 0)
+                : (indexCurrentImage += 1);
+            modalImage.src = images[indexCurrentImage].original;
             break;
         case 'ArrowLeft':
-            if (indexCurrentImage === 0) {
-                indexCurrentImage = galleryRef.length - 1;
-            } else {
-                indexCurrentImage -= 1;
-            }
-            modalImage.src = galleryRef[indexCurrentImage].original;
+            // if (indexCurrentImage === 0) {
+            //     indexCurrentImage = images.length - 1;
+            // } else {
+            //     indexCurrentImage -= 1;
+            // }
+
+            indexCurrentImage === 0
+                ? (indexCurrentImage = images.length - 1)
+                : (indexCurrentImage -= 1);
+            modalImage.src = images[indexCurrentImage].original;
             break;
     }
 }
