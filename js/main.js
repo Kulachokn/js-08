@@ -1,6 +1,4 @@
 'use strict'
-// import images from './gallery-items';
-
 import {default as images} from './gallery-items.js';
 
 const galleryRef = document.querySelector('.js-gallery');
@@ -9,10 +7,11 @@ const closeBtn = document.querySelector('button[data-action="close-lightbox"]');
 const modalImage = document.querySelector('.lightbox__image');
 const overlayRef = document.querySelector('.lightbox__overlay');
 
-// galleryRef.addEventListener('click', handleOpenModal);
 modalRef.addEventListener('click', handleOpenModal);
 closeBtn.addEventListener('click', handleCloseModal);
 overlayRef.addEventListener('click', handleOverlayClick);
+
+let indexCurrentImage;
 
 const galleryCreator = () => {
     let galleryList = '';
@@ -31,11 +30,12 @@ const galleryCreator = () => {
   </a>
 </li>`;
     }
-    // galleryRef.innerHTML = galleryList;
+
     galleryRef.insertAdjacentHTML('afterbegin', galleryList);
 };
 
 function handleOpenModal(event) {
+    event.preventDefault();
     if (event.target.nodeName !== "IMG") {
         return;
     }
@@ -47,16 +47,44 @@ function handleOpenModal(event) {
     modalImage.src = activeImageLargeURL;
     modalImage.alt = activeImageLargeALT;
 
-    modalRef.classList.add('.is-open');
+    modalRef.classList.add('is-open');
+    window.addEventListener('keydown', handlePressKey);
+    indexCurrentImage = Number(event.target.dataset.index);
 }
 
 function handleCloseModal() {
-    modalRef.classList.remove('.is-open');
+    modalImage.src = '';
+    modalRef.classList.remove('is-open');
+    window.removeEventListener('keypress', handlePressKey);
 }
 
 function handleOverlayClick(event) {
     if (event.target === event.currentTarget) {
         handleCloseModal();
+    }
+}
+
+function handlePressKey(event) {
+    switch (event.code) {
+        case 'Escape':
+            handleCloseModal();
+            break;
+        case 'ArrowRight':
+            if (indexCurrentImage + 1 === galleryRef.length) {
+                indexCurrentImage = 0;
+            } else {
+                indexCurrentImage += 1;
+            }
+            modalImage.src = galleryRef[indexCurrentImage].original;
+            break;
+        case 'ArrowLeft':
+            if (indexCurrentImage === 0) {
+                indexCurrentImage = galleryRef.length - 1;
+            } else {
+                indexCurrentImage -= 1;
+            }
+            modalImage.src = galleryRef[indexCurrentImage].original;
+            break;
     }
 }
 
