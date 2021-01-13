@@ -26,6 +26,7 @@ const galleryCreator = () => {
       src="${images[i].preview}"
       data-source="${images[i].original}"
       alt="${images[i].description}"
+      data-index="${i}"
     />
   </a>
 </li>`;
@@ -50,6 +51,7 @@ function handleOpenModal(event) {
     modalRef.classList.add('is-open');
     window.addEventListener('keydown', handlePressKey);
     indexCurrentImage = Number(event.target.dataset.index);
+    console.log(event.target.dataset.index);
     closeBtn.addEventListener('click', handleCloseModal);
     overlayRef.addEventListener('click', handleCloseModal);
 }
@@ -84,6 +86,7 @@ function handlePressKey(event) {
                 ? (indexCurrentImage = 0)
                 : (indexCurrentImage += 1);
             modalImage.src = images[indexCurrentImage].original;
+
             break;
         case 'ArrowLeft':
             // if (indexCurrentImage === 0) {
@@ -96,9 +99,30 @@ function handlePressKey(event) {
                 ? (indexCurrentImage = images.length - 1)
                 : (indexCurrentImage -= 1);
             modalImage.src = images[indexCurrentImage].original;
+
             break;
     }
 }
 
 galleryCreator();
 galleryRef.addEventListener("click", handleOpenModal);
+
+// const originalLinks = images.map((element) => element.original);
+//
+// const prevImgSrc = function () {
+//     const currentImgSrc = originalLinks.findIndex((el) => el === modalImage.src);
+//     if (currentImgSrc !== 0) {
+//         const prevImg = originalLinks[currentImgSrc - 1];
+//         modalImage.src = prevImg;
+//     }
+// };
+//
+// const nextImageSrc = function () {
+//     const currentImgSrc = originalLinks.findIndex((el) => el === modalImage.src);
+//     if (currentImgSrc !== originalLinks.length - 1) {
+//         const nextImg = originalLinks[currentImgSrc + 1];
+//         modalImage.src = nextImg;
+//     }
+// };
+
+// при использовании вызывать в case
